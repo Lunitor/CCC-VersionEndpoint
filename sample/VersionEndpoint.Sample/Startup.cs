@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.VersionEndpoint;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
+using VersionEndpoint.Middleware.Providers;
 
 namespace VersionEndpoint.Sample
 {
@@ -26,7 +28,8 @@ namespace VersionEndpoint.Sample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddVersionEndpoint();
+            services.AddVersionEndpoint(options =>
+                options.UseJsonFileVersionProvider("version.json"));
 
             services.AddControllers();
         }

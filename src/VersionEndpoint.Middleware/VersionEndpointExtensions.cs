@@ -1,16 +1,21 @@
-﻿using VersionEndpoint.Middleware;
+﻿using Microsoft.AspNetCore.Builder;
+using System;
+using VersionEndpoint.Middleware;
 using VersionEndpoint.Middleware.Providers;
-using Microsoft.AspNetCore.Builder;
-using System.IO.Abstractions;
 
 namespace Microsoft.Extensions.DependencyInjection.VersionEndpoint
 {
     public static class VersionEndpointExtensions
     {
-        public static void AddVersionEndpoint(this IServiceCollection services)
+        public static void AddVersionEndpoint(this IServiceCollection services, Action<VersionProviderOptionsBuilder> optionsAction)
         {
-            services.AddSingleton<IFileSystem, FileSystem>();
-            services.AddSingleton<IVersionProvider, JsonFileVersionProvider>();
+            var optionsBuilder = new VersionProviderOptionsBuilder();
+            optionsAction.Invoke(optionsBuilder);
+
+            var options = optionsBuilder.Options;
+
+            var providerServicesRegister = Activator.CreateInstance(options.ProviderServicesRegisterType) as IVersionProviderServicesRegister;
+            providerServicesRegister.RegisterRequiredServices(services, options);
         }
 
         public static IApplicationBuilder UseVersionEndpoint(this IApplicationBuilder app, string path)

@@ -1,7 +1,8 @@
-﻿using VersionEndpoint.Middleware.Providers;
-using Moq;
+﻿using Moq;
 using System;
+using System.IO;
 using System.IO.Abstractions;
+using VersionEndpoint.Middleware.Providers.JsonFile;
 using Xunit;
 
 namespace VersionEndpoint.Middleware.UnitTests.Providers
@@ -31,13 +32,21 @@ namespace VersionEndpoint.Middleware.UnitTests.Providers
         {
             _fileSystemMock = new Mock<IFileSystem>();
 
-            _jsonFileVersionProvider = new JsonFileVersionProvider(_fileSystemMock.Object);
+            _jsonFileVersionProvider = new JsonFileVersionProvider(_fileSystemMock.Object, "test.json");
         }
 
         [Fact]
         public void ConstructorShouldThrowArgumentNullExceptionWhenNullFileSystemPassed()
         {
-            Assert.Throws<ArgumentNullException>(() => new JsonFileVersionProvider(null));
+            Assert.Throws<ArgumentNullException>(() => new JsonFileVersionProvider(null, "test.json"));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void ConstructorShouldThrowArgumentExceptionWhenNullOrEmptyFilePathPassed(string filePath)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => new JsonFileVersionProvider(_fileSystemMock.Object, filePath));
         }
 
         [Fact]
