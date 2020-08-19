@@ -11,9 +11,6 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  major: '0'
-  minor: '1'
-  patch: '0'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -43,7 +40,4 @@ steps:
     command: pack
     projects: '**/VersionEndPoint.Middleware.csproj'
     packDirectory: $(Build.ArtifactStagingDirectory)/nuget
-    versioningScheme: byPrereleaseNumber
-    majorVersion: $(major)
-    minorVersion: $(minor)
-    patchVersion: $(patch)
+    versioningScheme: off
