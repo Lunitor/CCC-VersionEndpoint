@@ -10,8 +10,11 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  buildConfiguration: 'Release'
-  projectName: 'VersionEndpoint'
+  - group: 'Build Variables'
+  - name: projectName
+    value: 'VersionEndpoint'
+  - name: buildConfiguration
+    value: 'Release'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -50,4 +53,4 @@ steps:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/$(projectName)/*.nupkg;!$(Build.ArtifactStagingDirectory)/$(projectName)/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: '89168acf-a74f-48ae-acbb-004b81944d9d'
+    publishVstsFeed: $(VstsFeed)
